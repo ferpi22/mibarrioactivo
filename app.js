@@ -53,7 +53,6 @@ window.showSection = function(sectionId) {
     
     // Marcar menú inferior activo
     document.querySelectorAll('.nav-item-bottom').forEach(el => el.classList.remove('active'));
-    // Si entramos a subsecciones, iluminamos su ícono correspondiente, sino el home
     let navId = 'nav-' + sectionId.replace('Section','');
     let navElement = document.getElementById(navId);
     if(navElement) navElement.classList.add('active');
@@ -67,7 +66,16 @@ window.showSection = function(sectionId) {
                 attribution: '© OpenStreetMap' 
             }).addTo(map);
         }
-        setTimeout(() => { map.invalidateSize(); renderMap(); }, 300);
+        
+        // SOLUCIÓN AL BUG DEL MAPA EN BLANCO: 
+        // Esperamos 500ms para que la animación CSS (0.4s) termine de abrir la pestaña. 
+        // Así Leaflet puede calcular bien el tamaño (width/height) del contenedor en pantalla.
+        setTimeout(() => { 
+            if(map) {
+                map.invalidateSize(); 
+                renderMap(); 
+            }
+        }, 500);
     }
 }
 
@@ -209,7 +217,6 @@ function renderFeed() {
         let fotoHtml = r.foto ? `<img src="${r.foto}" class="feed-foto" alt="Problema">` : '';
         let badgeHtml = getStatusBadge(r.estado);
 
-        // Icono dinámico según categoría
         let iconCat = '<i class="fa-solid fa-circle-exclamation text-danger"></i>';
         if(r.categoria.includes('Bache')) iconCat = '<i class="fa-solid fa-road text-secondary"></i>';
         if(r.categoria.includes('Luminaria')) iconCat = '<i class="fa-solid fa-lightbulb text-warning"></i>';
@@ -278,7 +285,6 @@ function renderMap() {
     markers.forEach(m => map.removeLayer(m));
     markers = [];
     
-    // Icono violeta personalizado
     const customIcon = L.divIcon({
         className: 'custom-pin',
         html: '<i class="fa-solid fa-location-dot fa-2x" style="color: #9333ea; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.3));"></i>',
@@ -288,8 +294,11 @@ function renderMap() {
     });
 
     reportesGlobales.forEach(r => {
-        let m = L.marker([r.lat, r.lng], {icon: customIcon}).addTo(map)
-                 .bindPopup(`<div style="text-align:center;"><b>${r.categoria}</b><br><span style="color:#6b21a8;">Apoyos: ${r.apoyos}</span><br>${getStatusBadge(r.estado)}</div>`);
-        markers.push(m);
+        // Validación extra: Solo dibuja el marcador si existen coordenadas
+        if(r.lat && r.lng) {
+            let m = L.marker([r.lat, r.lng], {icon: customIcon}).addTo(map)
+                     .bindPopup(`<div style="text-align:center;"><b>${r.categoria}</b><br><span style="color:#6b21a8;">Apoyos: ${r.apoyos}</span><br>${getStatusBadge(r.estado)}</div>`);
+            markers.push(m);
+        }
     });
 }
