@@ -161,13 +161,6 @@ body {
     box-shadow: 0 10px 20px rgba(107, 33, 168, 0.3);
     transition: transform 0.2s;
 }
-.btn-submit:hover {
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 12px 25px rgba(107, 33, 168, 0.4);
-}
-.status-text { color: #d946ef; }
-.status-text.success { color: #10b981; }
 
 /* FIX MAPA */
 .map-container-solid {
@@ -211,28 +204,7 @@ body {
     font-weight: 600;
     transition: all 0.2s;
 }
-.btn-apoyar:hover:not(:disabled) {
-    background: var(--violet-pastel);
-}
-.btn-apoyar:disabled {
-    background: var(--violet-main);
-    color: white;
-    border-color: var(--violet-main);
-}
-
-/* Tablas Custom */
-.custom-table {
-    color: var(--violet-dark);
-}
-.custom-table th {
-    font-weight: 700;
-    border-bottom: 2px solid var(--violet-pastel);
-    color: var(--violet-main);
-}
-.custom-table td {
-    vertical-align: middle;
-    border-bottom: 1px solid rgba(255,255,255,0.3);
-}
+.btn-apoyar:hover:not(:disabled) { background: var(--violet-pastel); }
 
 /* Badges de estado */
 .badge-status {
@@ -252,22 +224,22 @@ body {
     bottom: 0;
     left: 0;
     width: 100%;
-    background: rgba(255, 255, 255, 0.75);
+    background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
     display: flex;
     justify-content: space-around;
-    padding: 12px 0 15px 0;
+    padding: 10px 0 12px 0;
     border-top: 1px solid rgba(255,255,255,0.8);
     z-index: 1000;
     box-shadow: 0 -5px 20px rgba(88, 28, 135, 0.05);
-    border-radius: 25px 25px 0 0;
+    border-radius: 20px 20px 0 0;
 }
 .nav-item-bottom {
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-size: 0.75rem;
+    font-size: 0.65rem;
     color: #9ca3af;
     cursor: pointer;
     flex: 1;
@@ -275,13 +247,22 @@ body {
     transition: all 0.3s ease;
 }
 .nav-item-bottom i {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     margin-bottom: 3px;
     transition: transform 0.3s ease;
 }
-.nav-item-bottom.active {
-    color: var(--violet-main);
+.nav-item-bottom.active { color: var(--violet-main); }
+.nav-item-bottom.active i { transform: translateY(-4px) scale(1.1); }
+.admin-btn { color: #ef4444; } /* Botón rojo de Admin */
+
+/* Estilos de Admin Dashboard */
+.admin-card {
+    border: 2px solid rgba(239, 68, 68, 0.2);
+    border-radius: 15px;
+    overflow: hidden;
 }
-.nav-item-bottom.active i {
-    transform: translateY(-4px) scale(1.1);
+.admin-status-select {
+    background-color: white;
+    font-weight: bold;
+    border-radius: 10px;
 }
