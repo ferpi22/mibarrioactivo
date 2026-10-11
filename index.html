@@ -3,285 +3,234 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RiojaLandia Observatorio</title>
-    <!-- Leaflet para el Mapa Interactivo -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <style>
-        /* Paleta Violeta Pastel y Diseño UI/UX Moderno */
-        :root {
-            --bg-body: #f7f3fb;
-            --bg-sidebar: #eae0f5;
-            --bg-card: #ffffff;
-            --primary: #a881d2;
-            --primary-hover: #9161c4;
-            --accent: #d4bbed;
-            --text-dark: #3a2e4a;
-            --text-muted: #7a6b8c;
-            --shadow: 0 10px 25px rgba(168, 129, 210, 0.15);
-            --transition: all 0.3s ease;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        
-        body { display: flex; height: 100vh; background-color: var(--bg-body); color: var(--text-dark); overflow: hidden; }
-
-        /* Panel Lateral (Sidebar) */
-        .sidebar { width: 260px; background-color: var(--bg-sidebar); padding: 30px 20px; display: flex; flex-direction: column; gap: 15px; border-right: 1px solid #dcd0ea; z-index: 10; }
-        .sidebar h1 { font-size: 1.4rem; font-weight: 700; color: var(--text-dark); margin-bottom: 30px; text-align: center; letter-spacing: -0.5px; }
-        
-        .nav-btn { background-color: transparent; border: 1px solid transparent; padding: 14px 20px; border-radius: 12px; cursor: pointer; font-size: 0.95rem; font-weight: 600; color: var(--text-muted); transition: var(--transition); text-align: left; display: flex; align-items: center; gap: 10px; }
-        .nav-btn:hover { background-color: rgba(255,255,255,0.5); color: var(--primary-hover); transform: translateX(5px); }
-        .nav-btn.active { background-color: var(--bg-card); color: var(--primary-hover); box-shadow: var(--shadow); border: 1px solid #fff; transform: translateX(5px); }
-
-        /* Contenido Principal */
-        .main-content { flex: 1; display: flex; flex-direction: column; padding: 30px; gap: 25px; overflow-y: auto; }
-        
-        /* Cabecera del Dashboard */
-        .header { display: flex; justify-content: space-between; align-items: center; background: var(--bg-card); padding: 20px 30px; border-radius: 20px; box-shadow: var(--shadow); }
-        .header-title h2 { font-size: 1.5rem; color: var(--text-dark); }
-        .header-title p { font-size: 0.85rem; color: var(--text-muted); margin-top: 5px; }
-        
-        .update-panel { text-align: right; }
-        .update-status { font-size: 0.85rem; font-weight: 600; padding: 6px 12px; border-radius: 20px; display: inline-block; margin-bottom: 5px; }
-        .status-ok { background-color: #e5f7ed; color: #2ea05d; }
-        .status-old { background-color: #ffeaea; color: #d93838; }
-        .force-btn { background-color: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: var(--transition); }
-        .force-btn:hover { background-color: var(--primary-hover); }
-
-        /* Tarjetas de Indicadores (KPIs) */
-        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
-        .kpi-card { background: var(--bg-card); padding: 25px; border-radius: 20px; box-shadow: var(--shadow); transition: var(--transition); border-bottom: 4px solid var(--accent); }
-        .kpi-card:hover { transform: translateY(-5px); border-bottom-color: var(--primary); }
-        .kpi-title { font-size: 0.9rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; margin-bottom: 10px; }
-        .kpi-value { font-size: 2rem; font-weight: 700; color: var(--text-dark); }
-        .kpi-trend { font-size: 0.8rem; color: #2ea05d; margin-top: 8px; font-weight: 600; }
-
-        /* Contenedor del Mapa */
-        .map-container { flex: 1; background: var(--bg-card); border-radius: 20px; overflow: hidden; box-shadow: var(--shadow); min-height: 400px; position: relative; border: 4px solid var(--bg-card); }
-        #map { width: 100%; height: 100%; border-radius: 16px; }
-
-        /* Custom Popup Leaflet */
-        .leaflet-popup-content-wrapper { background-color: var(--bg-card); color: var(--text-dark); border-radius: 12px; box-shadow: var(--shadow); }
-        .leaflet-popup-content { font-family: 'Inter', sans-serif; font-weight: 600; }
-    </style>
+    <title>MiBarrio Activo</title>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Barra de Navegación Glass -->
+    <nav class="navbar glass-navbar sticky-top">
+        <div class="container-fluid justify-content-center position-relative">
+            <span class="navbar-brand mb-0 h1 logo-title">
+                <i class="fa-solid fa-city"></i> MiBarrio Activo
+            </span>
+        </div>
+    </nav>
 
-    <!-- Panel Lateral -->
-    <div class="sidebar">
-        <h1>RiojaLandia<br><span style="font-size: 0.9rem; font-weight: 400; color: var(--text-muted);">Observatorio</span></h1>
-        <button class="nav-btn active" onclick="loadSection('poblacion')">👥 Población</button>
-        <button class="nav-btn" onclick="loadSection('salud')">🏥 Salud Pública</button>
-        <button class="nav-btn" onclick="loadSection('produccion')">⚙️ Producción y Minería</button>
-        <button class="nav-btn" onclick="loadSection('clima')">⛅ Clima y Ambiente</button>
-    </div>
+    <!-- Menú Inferior Glass (Actualizado con ADMIN) -->
+    <nav class="nav-bottom glass-nav">
+        <div class="nav-item-bottom active" onclick="showSection('homeSection')" id="nav-home">
+            <i class="fa-solid fa-house"></i><span>Inicio</span>
+        </div>
+        <div class="nav-item-bottom" onclick="showSection('formSection')" id="nav-form">
+            <i class="fa-solid fa-bullhorn"></i><span>Reportar</span>
+        </div>
+        <div class="nav-item-bottom" onclick="showSection('feedSection')" id="nav-feed">
+            <i class="fa-solid fa-users"></i><span>Muro</span>
+        </div>
+        <div class="nav-item-bottom" onclick="showSection('mapSection')" id="nav-map">
+            <i class="fa-solid fa-map-location-dot"></i><span>Mapa</span>
+        </div>
+        <div class="nav-item-bottom admin-btn" onclick="showSection('adminLoginSection')" id="nav-adminLogin">
+            <i class="fa-solid fa-shield-halved"></i><span>Admin</span>
+        </div>
+    </nav>
 
-    <!-- Contenido Principal -->
-    <div class="main-content">
-        <!-- Cabecera -->
-        <div class="header">
-            <div class="header-title">
-                <h2 id="view-title">Población</h2>
-                <p id="view-desc">Indicadores demográficos actuales de La Rioja.</p>
+    <div class="container mt-4 mb-5 pb-5">
+
+        <!-- SECCIÓN 0: INICIO (HOME DINÁMICO) -->
+        <div id="homeSection" class="section-active text-center">
+            <div class="hero-section glass-card p-4 mb-4">
+                <div class="logo-icon-large mb-2">
+                    <i class="fa-solid fa-location-dot"></i>
+                </div>
+                <h1 class="welcome-title">¡Hola Vecino!</h1>
+                <p class="welcome-subtitle">Tu voz mejora nuestra comunidad. Seleccioná una acción para empezar.</p>
             </div>
-            <div class="update-panel">
-                <div id="update-badge" class="update-status status-ok">Datos Actualizados</div><br>
-                <button class="force-btn" onclick="forceUpdate()">Actualizar Ahora</button>
+
+            <div class="row g-3">
+                <div class="col-6">
+                    <button class="action-btn glass-card" onclick="showSection('formSection')">
+                        <i class="fa-solid fa-plus-circle icon-report"></i>
+                        <span>Nuevo Reporte</span>
+                    </button>
+                </div>
+                <div class="col-6">
+                    <button class="action-btn glass-card" onclick="showSection('feedSection')">
+                        <i class="fa-solid fa-users icon-feed"></i>
+                        <span>Muro Vecinal</span>
+                    </button>
+                </div>
+                <div class="col-6">
+                    <button class="action-btn glass-card" onclick="showSection('mapSection')">
+                        <i class="fa-solid fa-map icon-map"></i>
+                        <span>Mapa Incidentes</span>
+                    </button>
+                </div>
+                <div class="col-6">
+                    <button class="action-btn glass-card" onclick="showSection('misReclamosSection')">
+                        <i class="fa-solid fa-clipboard-list icon-mine"></i>
+                        <span>Mis Avisos</span>
+                    </button>
+                </div>
             </div>
         </div>
-
-        <!-- Tarjetas (KPIs) -->
-        <div class="kpi-grid" id="kpi-container">
-            <!-- Renderizado Dinámico -->
-        </div>
-
-        <!-- Mapa -->
-        <div class="map-container">
-            <div id="map"></div>
-        </div>
-    </div>
-
-    <!-- Scripts de Funcionalidad -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script>
-        // --- 1. CONFIGURACIÓN DEL MAPA ---
-        const map = L.map('map').setView([-29.413454, -66.856458], 7);
-        // Mapa base con colores claros que combinan con el violeta
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-            attribution: '&copy; OpenStreetMap',
-            maxZoom: 18
-        }).addTo(map);
-
-        let mapMarkers = [];
-
-        // --- 2. BASE DE DATOS (Simulación de API con datos reales de La Rioja) ---
-        const observatorioData = {
-            poblacion: {
-                title: "Población y Demografía",
-                desc: "Datos basados en el último censo y proyecciones del INDEC.",
-                kpis: [
-                    { title: "Población Total", value: "384.607", trend: "+2.1% anual" },
-                    { title: "Densidad", value: "4,3 hab/km²", trend: "Estable" },
-                    { title: "Población Urbana", value: "85%", trend: "+1.2% urbanización" }
-                ],
-                markers: [
-                    { lat: -29.4134, lng: -66.8564, text: "La Rioja Capital: 214.263 hab." },
-                    { lat: -29.1635, lng: -67.4963, text: "Chilecito: 49.432 hab." },
-                    { lat: -30.3475, lng: -66.3158, text: "Chamical: 14.160 hab." }
-                ]
-            },
-            salud: {
-                title: "Salud Pública",
-                desc: "Infraestructura sanitaria y métricas hospitalarias provinciales.",
-                kpis: [
-                    { title: "Hospitales Públicos", value: "34", trend: "En funcionamiento" },
-                    { title: "Centros de Atención Primaria", value: "186", trend: "Cobertura provincial" },
-                    { title: "Camas Operativas", value: "1.250", trend: "Ocupación actual: 62%" }
-                ],
-                markers: [
-                    { lat: -29.4150, lng: -66.8500, text: "Hospital Regional Enrique Vera Barros (Nivel 8)" },
-                    { lat: -29.4300, lng: -66.8600, text: "Hospital de la Madre y el Niño" },
-                    { lat: -29.1600, lng: -67.5000, text: "Hospital Eleázar Herrera Motta (Chilecito)" }
-                ]
-            },
-            produccion: {
-                title: "Producción y Minería",
-                desc: "Indicadores económicos, parque industrial y proyectos extractivos.",
-                kpis: [
-                    { title: "Empresas Industriales", value: "142", trend: "+5 radicaciones recientes" },
-                    { title: "Proyectos Mineros", value: "12", trend: "Exploración litio/cobre" },
-                    { title: "Exportaciones (Millones USD)", value: "$210M", trend: "+8.4% vs año anterior" }
-                ],
-                markers: [
-                    { lat: -29.4500, lng: -66.8200, text: "Parque Industrial La Rioja" },
-                    { lat: -28.3200, lng: -68.5500, text: "Proyecto Minero Peñas Negras (Cobre/Oro)" },
-                    { lat: -29.0000, lng: -67.5000, text: "Zona Producción Vitivinícola y Olivícola" }
-                ]
-            },
-            clima: {
-                title: "Clima y Ambiente",
-                desc: "Estaciones meteorológicas y condiciones ambientales actuales.",
-                kpis: [
-                    { title: "Temperatura Promedio", value: "24°C", trend: "Clima semiárido" },
-                    { title: "Precipitación Anual", value: "300 mm", trend: "-5% vs promedio histórico" },
-                    { title: "Parques Eólicos", value: "Arauko", trend: "150 MW generados" }
-                ],
-                markers: [
-                    { lat: -29.3800, lng: -66.8100, text: "Aeropuerto Almirante Brown - Estación Meteorológica" },
-                    { lat: -28.6667, lng: -66.7833, text: "Parque Eólico Arauco" }
-                ]
-            }
-        };
-
-        // --- 3. LÓGICA DE ACTUALIZACIÓN (15 DÍAS) ---
-        function checkDataFreshness() {
-            const lastUpdateKey = 'riojalandia_update_date';
-            let lastDateStr = localStorage.getItem(lastUpdateKey);
-            const today = new Date();
-            const badge = document.getElementById('update-badge');
-
-            if (!lastDateStr) {
-                // Primera vez que se abre la app
-                localStorage.setItem(lastUpdateKey, today.toISOString());
-                lastDateStr = today.toISOString();
-            }
-
-            const lastDate = new Date(lastDateStr);
-            const diffTime = Math.abs(today - lastDate);
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-            if (diffDays >= 15) {
-                badge.className = "update-status status-old";
-                badge.innerText = `Datos desactualizados (Hace ${diffDays} días). Actualizando...`;
-                
-                // Simulación de delay de API
-                setTimeout(() => {
-                    localStorage.setItem(lastUpdateKey, today.toISOString());
-                    badge.className = "update-status status-ok";
-                    badge.innerText = "Datos Actualizados Automáticamente";
-                }, 2000);
-            } else {
-                badge.className = "update-status status-ok";
-                badge.innerText = `Datos Actualizados (Próx. revisión en ${15 - diffDays} días)`;
-            }
-        }
-
-        function forceUpdate() {
-            localStorage.setItem('riojalandia_update_date', new Date().toISOString());
-            const badge = document.getElementById('update-badge');
-            badge.className = "update-status status-ok";
-            badge.innerText = "Sincronización forzada exitosa";
-            
-            // Efecto visual de recarga
-            const currentActive = document.querySelector('.nav-btn.active');
-            if(currentActive) currentActive.click();
-        }
-
-        // --- 4. RENDERIZADO DE LA INTERFAZ ---
-        function loadSection(sectionKey) {
-            // Actualizar estado activo de botones
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-
-            const data = observatorioData[sectionKey];
-            
-            // Renderizar Textos
-            document.getElementById('view-title').innerText = data.title;
-            document.getElementById('view-desc').innerText = data.desc;
-
-            // Renderizar KPIs
-            const kpiContainer = document.getElementById('kpi-container');
-            kpiContainer.innerHTML = '';
-            data.kpis.forEach(kpi => {
-                kpiContainer.innerHTML += `
-                    <div class="kpi-card">
-                        <div class="kpi-title">${kpi.title}</div>
-                        <div class="kpi-value">${kpi.value}</div>
-                        <div class="kpi-trend">${kpi.trend}</div>
+        
+        <!-- SECCIÓN 1: FORMULARIO DE REPORTE -->
+        <div id="formSection" class="section-hidden">
+            <h4 class="mb-3 section-title"><i class="fa-solid fa-pen-to-square"></i> Reportar un Problema</h4>
+            <div class="glass-card p-4">
+                <form id="reporteForm">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold custom-label">Tipo de Incidente</label>
+                        <select class="form-select custom-input" id="categoria" required>
+                            <option value="" disabled selected>Selecciona una opción...</option>
+                            <option value="Bache / Asfalto Roto">🚧 Bache / Asfalto Roto</option>
+                            <option value="Luminaria Apagada">💡 Luminaria Apagada/Rota</option>
+                            <option value="Microbasural / Limpieza">🗑️ Microbasural / Limpieza</option>
+                            <option value="Pérdida de Agua">💧 Pérdida de Agua / Cloaca</option>
+                            <option value="Arbolado / Cables">🌳 Ramas / Cables caídos</option>
+                        </select>
                     </div>
-                `;
-            });
 
-            // Renderizar Mapa
-            mapMarkers.forEach(marker => map.removeLayer(marker));
-            mapMarkers = [];
+                    <div class="mb-3">
+                        <label class="form-label fw-bold custom-label">Tomar Foto</label>
+                        <input type="file" class="form-control custom-input" id="fotoInput" accept="image/*" capture="environment">
+                        <img id="fotoPreview" class="img-fluid mt-3 rounded d-none shadow-sm" style="max-height: 200px; width: 100%; object-fit: cover;">
+                        <input type="hidden" id="fotoBase64">
+                    </div>
 
-            // Icono personalizado violeta para Leaflet
-            const violetIcon = new L.Icon({
-                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png',
-                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-                iconSize: [25, 41],
-                iconAnchor: [12, 41],
-                popupAnchor: [1, -34],
-                shadowSize: [41, 41]
-            });
+                    <div class="mb-3">
+                        <label class="form-label fw-bold custom-label">Descripción breve</label>
+                        <textarea class="form-control custom-input" id="descripcion" rows="2" placeholder="Ej: Esquina muy oscura..." required></textarea>
+                    </div>
 
-            const group = new L.featureGroup();
+                    <div class="mb-4">
+                        <button type="button" class="btn btn-gps w-100 mb-2 fw-bold" onclick="getLocation()" id="btnGPS">
+                            <i class="fa-solid fa-location-crosshairs"></i> Obtener Ubicación
+                        </button>
+                        <div class="text-center"><small id="locationStatus" class="status-text fw-bold">⚠️ Requerido para enviar</small></div>
+                        <input type="hidden" id="lat" required>
+                        <input type="hidden" id="lng" required>
+                    </div>
 
-            data.markers.forEach(item => {
-                const marker = L.marker([item.lat, item.lng], {icon: violetIcon})
-                                .bindPopup(item.text)
-                                .addTo(map);
-                mapMarkers.push(marker);
-                group.addLayer(marker);
-            });
+                    <button type="submit" class="btn btn-submit w-100 py-3 fs-5 fw-bold"><i class="fa-solid fa-paper-plane"></i> Enviar Reporte</button>
+                </form>
+            </div>
+        </div>
 
-            // Ajustar vista del mapa para que se vean todos los pines
-            if(mapMarkers.length > 0) {
-                map.fitBounds(group.getBounds(), {padding: [50, 50], maxZoom: 10});
-            } else {
-                map.setView([-29.413454, -66.856458], 7);
-            }
-        }
+        <!-- SECCIÓN 2: MURO VECINAL (FEED) -->
+        <div id="feedSection" class="section-hidden">
+            <h4 class="mb-3 section-title"><i class="fa-solid fa-users"></i> Muro Vecinal</h4>
+            <p class="text-muted text-center small mb-4">Apoyá los reclamos de tus vecinos para darles prioridad.</p>
+            <div id="feedContainer">
+                <div class="text-center mt-5 text-muted"><i class="fa-solid fa-spinner fa-spin"></i> Cargando...</div>
+            </div>
+        </div>
 
-        // --- 5. INICIALIZACIÓN ---
-        window.onload = () => {
-            checkDataFreshness();
-            // Simular clic en el primer botón para cargar datos iniciales
-            const firstBtn = document.querySelector('.nav-btn');
-            firstBtn.click();
-        };
-    </script>
+        <!-- SECCIÓN 3: MAPA -->
+        <div id="mapSection" class="section-hidden">
+            <h4 class="mb-3 section-title"><i class="fa-solid fa-map-location-dot"></i> Mapa de Incidentes</h4>
+            
+            <div class="d-flex flex-wrap justify-content-center gap-2 mb-3" style="font-size: 0.75rem;">
+                <span class="badge bg-secondary"><i class="fa-solid fa-road"></i> Baches</span>
+                <span class="badge bg-warning text-dark"><i class="fa-solid fa-lightbulb"></i> Luces</span>
+                <span class="badge bg-success"><i class="fa-solid fa-trash"></i> Basura</span>
+                <span class="badge bg-info text-dark"><i class="fa-solid fa-droplet"></i> Agua</span>
+                <span class="badge" style="background-color: #15803d;"><i class="fa-solid fa-tree"></i> Árboles</span>
+            </div>
+
+            <div class="map-container-solid">
+                <div id="map" class="rounded"></div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 4: MIS RECLAMOS -->
+        <div id="misReclamosSection" class="section-hidden">
+            <h4 class="mb-3 section-title"><i class="fa-solid fa-clipboard-check"></i> Mis Reportes</h4>
+            <p class="text-muted text-center small mb-4">Seguimiento del estado de tus reclamos.</p>
+            <div class="glass-card p-3">
+                <div class="table-responsive">
+                    <table class="table table-borderless custom-table mb-0">
+                        <thead>
+                            <tr>
+                                <th>Incidente</th>
+                                <th class="text-end">Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="misReclamosTabla">
+                            <!-- Llenado por JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 5: LOGIN DE ADMINISTRADOR -->
+        <div id="adminLoginSection" class="section-hidden text-center">
+            <h4 class="mb-3 section-title text-danger"><i class="fa-solid fa-lock"></i> Acceso Privado</h4>
+            <p class="text-muted small mb-4">Área exclusiva para el equipo de gestión municipal.</p>
+            <div class="glass-card p-4 mx-auto" style="max-width: 400px;">
+                <form onsubmit="loginAdmin(event)">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold custom-label text-danger">Contraseña de Administrador</label>
+                        <input type="password" id="adminPass" class="form-control custom-input text-center" placeholder="******" required>
+                    </div>
+                    <button type="submit" class="btn btn-danger w-100 fw-bold shadow"><i class="fa-solid fa-right-to-bracket"></i> Ingresar</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 6: PANEL DASHBOARD ADMINISTRADOR -->
+        <div id="adminDashboardSection" class="section-hidden">
+            <h4 class="mb-3 section-title text-danger"><i class="fa-solid fa-screwdriver-wrench"></i> Centro de Gestión</h4>
+            
+            <!-- Resumen de estado -->
+            <div class="glass-card p-3 mb-4 d-flex justify-content-around text-center shadow-sm">
+                <div>
+                    <div class="fs-4 fw-bold text-dark" id="adminTotal">0</div>
+                    <div class="small text-muted text-uppercase">Total</div>
+                </div>
+                <div class="border-start border-end px-4">
+                    <div class="fs-4 fw-bold text-danger" id="adminPendientes">0</div>
+                    <div class="small text-muted text-uppercase">Pendientes</div>
+                </div>
+                <div>
+                    <div class="fs-4 fw-bold text-success" id="adminSolucionados">0</div>
+                    <div class="small text-muted text-uppercase">Resueltos</div>
+                </div>
+            </div>
+
+            <!-- Filtros -->
+            <div class="mb-4">
+                <label class="fw-bold small text-muted ms-2 mb-1">Filtrar por categoría:</label>
+                <select id="adminFiltroCategoria" class="form-select custom-input border-danger" onchange="renderAdmin()">
+                    <option value="TODOS">🌐 Ver Todas las Categorías</option>
+                    <option value="Bache / Asfalto Roto">🚧 Bache / Asfalto Roto</option>
+                    <option value="Luminaria Apagada">💡 Luminaria Apagada/Rota</option>
+                    <option value="Microbasural / Limpieza">🗑️ Microbasural / Limpieza</option>
+                    <option value="Pérdida de Agua">💧 Pérdida de Agua / Cloaca</option>
+                    <option value="Arbolado / Cables">🌳 Ramas / Cables caídos</option>
+                </select>
+            </div>
+
+            <!-- Grilla Interactiva de Reclamos -->
+            <div id="adminGrid" class="row g-3">
+                <!-- Se llena por JS -->
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script type="module" src="app.js"></script>
 </body>
 </html>
