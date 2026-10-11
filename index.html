@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MiBarrio Activo</title>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Barra de Navegación -->
+    <nav class="navbar navbar-dark bg-success shadow-sm sticky-top">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">🏡 MiBarrio Activo</span>
+        </div>
+    </nav>
+
+    <!-- Menú Inferior (Mobile App Style) -->
+    <nav class="nav-bottom shadow">
+        <div class="nav-item-bottom" onclick="showSection('formSection')" id="nav-form">
+            <span class="fs-4">📢</span><br>Reportar
+        </div>
+        <div class="nav-item-bottom" onclick="showSection('feedSection')" id="nav-feed">
+            <span class="fs-4">👥</span><br>Muro
+        </div>
+        <div class="nav-item-bottom" onclick="showSection('mapSection')" id="nav-map">
+            <span class="fs-4">🗺️</span><br>Mapa
+        </div>
+        <div class="nav-item-bottom" onclick="showSection('misReclamosSection')" id="nav-mis">
+            <span class="fs-4">📋</span><br>Mis Avisos
+        </div>
+    </nav>
+
+    <div class="container mt-3 mb-5 pb-5">
+        
+        <!-- SECCIÓN 1: FORMULARIO DE REPORTE -->
+        <div id="formSection" class="section-active">
+            <h4 class="mb-3 text-success">Reportar un Problema</h4>
+            <div class="card p-3 shadow-sm border-success">
+                <form id="reporteForm">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Tipo de Incidente</label>
+                        <select class="form-select" id="categoria" required>
+                            <option value="" disabled selected>Selecciona una opción...</option>
+                            <option value="Bache / Asfalto Roto">🚧 Bache / Asfalto Roto</option>
+                            <option value="Luminaria Apagada">💡 Luminaria Apagada/Rota</option>
+                            <option value="Microbasural / Limpieza">🗑️ Microbasural / Limpieza</option>
+                            <option value="Pérdida de Agua">💧 Pérdida de Agua / Cloaca</option>
+                            <option value="Arbolado / Cables">🌳 Ramas / Cables caídos</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Tomar Foto (Opcional pero recomendado)</label>
+                        <input type="file" class="form-control" id="fotoInput" accept="image/*" capture="environment">
+                        <img id="fotoPreview" class="img-fluid mt-2 rounded d-none" style="max-height: 200px; width: 100%; object-fit: cover;">
+                        <input type="hidden" id="fotoBase64">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Descripción breve</label>
+                        <textarea class="form-control" id="descripcion" rows="2" placeholder="Ej: Esquina muy oscura, foco roto hace 1 semana..." required></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <button type="button" class="btn btn-outline-success w-100 mb-2 fw-bold" onclick="getLocation()" id="btnGPS">
+                            📍 Obtener Ubicación Automática
+                        </button>
+                        <div class="text-center"><small id="locationStatus" class="text-danger fw-bold">⚠️ Requerido para enviar</small></div>
+                        <input type="hidden" id="lat" required>
+                        <input type="hidden" id="lng" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100 py-3 fs-5 shadow-sm fw-bold">Enviar Reporte Ciudadano</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 2: MURO VECINAL (FEED) -->
+        <div id="feedSection" class="section-hidden">
+            <h4 class="mb-3 text-success">Muro Vecinal</h4>
+            <p class="text-muted small">Apoyá los reclamos de tus vecinos para darles mayor prioridad.</p>
+            <div id="feedContainer">
+                <!-- Tarjetas generadas por JS -->
+                <div class="text-center mt-5 text-muted">Cargando reclamos...</div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 3: MAPA -->
+        <div id="mapSection" class="section-hidden">
+            <h4 class="mb-3 text-success">Mapa de Incidentes</h4>
+            <div id="map" class="border rounded shadow-sm border-success"></div>
+        </div>
+
+        <!-- SECCIÓN 4: MIS RECLAMOS Y TRAZABILIDAD -->
+        <div id="misReclamosSection" class="section-hidden">
+            <h4 class="mb-3 text-success">Mis Reportes</h4>
+            <p class="text-muted small">Seguimiento del estado de tus reclamos.</p>
+            <div class="table-responsive">
+                <table class="table table-hover mt-2">
+                    <thead class="table-success">
+                        <tr>
+                            <th>Incidente</th>
+                            <th>Estado Actual</th>
+                        </tr>
+                    </thead>
+                    <tbody id="misReclamosTabla">
+                        <!-- Llenado por JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script type="module" src="app.js"></script>
+</body>
+</html>
