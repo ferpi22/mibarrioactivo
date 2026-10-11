@@ -135,7 +135,16 @@
         <!-- SECCIÓN 3: MAPA -->
         <div id="mapSection" class="section-hidden">
             <h4 class="mb-3 section-title"><i class="fa-solid fa-map-location-dot"></i> Mapa de Incidentes</h4>
-            <!-- FIX: Se quita la clase 'glass-card' de aquí. El efecto 'backdrop-filter' rompe el renderizado de los mapas en navegadores móviles -->
+            
+            <!-- Referencia de colores rápida -->
+            <div class="d-flex flex-wrap justify-content-center gap-2 mb-3" style="font-size: 0.75rem;">
+                <span class="badge bg-secondary"><i class="fa-solid fa-road"></i> Baches</span>
+                <span class="badge bg-warning text-dark"><i class="fa-solid fa-lightbulb"></i> Luces</span>
+                <span class="badge bg-success"><i class="fa-solid fa-trash"></i> Basura</span>
+                <span class="badge bg-info text-dark"><i class="fa-solid fa-droplet"></i> Agua</span>
+                <span class="badge" style="background-color: #15803d;"><i class="fa-solid fa-tree"></i> Árboles</span>
+            </div>
+
             <div class="map-container-solid">
                 <div id="map" class="rounded"></div>
             </div>

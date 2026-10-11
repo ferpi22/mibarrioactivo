@@ -169,7 +169,7 @@ body {
 .status-text { color: #d946ef; }
 .status-text.success { color: #10b981; }
 
-/* FIX MAPA: Contenedor sin backdrop-filter para evitar bug de renderizado en Chrome/Safari */
+/* FIX MAPA */
 .map-container-solid {
     background: white;
     padding: 6px;
@@ -178,7 +178,7 @@ body {
     box-shadow: var(--glass-shadow);
 }
 #map { 
-    height: 60vh; 
+    height: 55vh; 
     min-height: 400px;
     width: 100%; 
     z-index: 1; 

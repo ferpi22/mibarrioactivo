@@ -51,23 +51,19 @@ window.showSection = function(sectionId) {
     });
     document.getElementById(sectionId).className = 'section-active';
     
-    // Marcar menú inferior activo
     document.querySelectorAll('.nav-item-bottom').forEach(el => el.classList.remove('active'));
     let navId = 'nav-' + sectionId.replace('Section','');
     let navElement = document.getElementById(navId);
     if(navElement) navElement.classList.add('active');
     
-    // Iniciar Mapa solo cuando se muestra
     if(sectionId === 'mapSection') {
         if(!map) {
             map = L.map('map').setView([-29.4134, -66.8564], 13); 
-            // FIX MAPA: Usamos el mapa base estándar de OpenStreetMap que no falla en ningún navegador móvil
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { 
                 attribution: '© OpenStreetMap' 
             }).addTo(map);
         }
         
-        // Ejecutamos validación doble para forzar al mapa a renderizarse sin importar la velocidad del celular
         setTimeout(() => { if(map) { map.invalidateSize(); } }, 100);
         setTimeout(() => { if(map) { map.invalidateSize(); renderMap(); } }, 500);
     }
@@ -272,23 +268,32 @@ function renderMisReclamos() {
     });
 }
 
-// 12. RENDERIZAR MAPA
+// 12. RENDERIZAR MAPA CON COLORES POR CATEGORIA
 function renderMap() {
     markers.forEach(m => map.removeLayer(m));
     markers = [];
     
-    const customIcon = L.divIcon({
-        className: 'custom-pin',
-        html: '<i class="fa-solid fa-location-dot fa-2x" style="color: #9333ea; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.3));"></i>',
-        iconSize: [30, 42],
-        iconAnchor: [15, 42],
-        popupAnchor: [0, -40]
-    });
-
     reportesGlobales.forEach(r => {
         if(r.lat && r.lng) {
+            
+            // Asignar color dinámico según el tipo de reclamo
+            let pinColor = '#9333ea'; // Violeta por defecto
+            if(r.categoria.includes('Bache')) pinColor = '#6c757d'; // Gris oscuro para baches
+            if(r.categoria.includes('Luminaria')) pinColor = '#eab308'; // Amarillo para luz
+            if(r.categoria.includes('Basura')) pinColor = '#198754'; // Verde oscuro para basura
+            if(r.categoria.includes('Agua')) pinColor = '#0ea5e9'; // Celeste/Azul para agua
+            if(r.categoria.includes('Arbolado')) pinColor = '#15803d'; // Verde hoja para árboles
+
+            const customIcon = L.divIcon({
+                className: 'custom-pin',
+                html: `<i class="fa-solid fa-location-dot fa-2x" style="color: ${pinColor}; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.3));"></i>`,
+                iconSize: [30, 42],
+                iconAnchor: [15, 42],
+                popupAnchor: [0, -40]
+            });
+
             let m = L.marker([r.lat, r.lng], {icon: customIcon}).addTo(map)
-                     .bindPopup(`<div style="text-align:center;"><b>${r.categoria}</b><br><span style="color:#6b21a8;">Apoyos: ${r.apoyos}</span><br>${getStatusBadge(r.estado)}</div>`);
+                     .bindPopup(`<div style="text-align:center;"><b>${r.categoria}</b><br><span style="color:${pinColor}; font-weight:bold;">Apoyos: ${r.apoyos}</span><br><div class="mt-1">${getStatusBadge(r.estado)}</div></div>`);
             markers.push(m);
         }
     });
