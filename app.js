@@ -61,21 +61,15 @@ window.showSection = function(sectionId) {
     if(sectionId === 'mapSection') {
         if(!map) {
             map = L.map('map').setView([-29.4134, -66.8564], 13); 
-            // Capa clara estilo "Glass"
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { 
+            // FIX MAPA: Usamos el mapa base estándar de OpenStreetMap que no falla en ningún navegador móvil
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { 
                 attribution: '© OpenStreetMap' 
             }).addTo(map);
         }
         
-        // SOLUCIÓN AL BUG DEL MAPA EN BLANCO: 
-        // Esperamos 500ms para que la animación CSS (0.4s) termine de abrir la pestaña. 
-        // Así Leaflet puede calcular bien el tamaño (width/height) del contenedor en pantalla.
-        setTimeout(() => { 
-            if(map) {
-                map.invalidateSize(); 
-                renderMap(); 
-            }
-        }, 500);
+        // Ejecutamos validación doble para forzar al mapa a renderizarse sin importar la velocidad del celular
+        setTimeout(() => { if(map) { map.invalidateSize(); } }, 100);
+        setTimeout(() => { if(map) { map.invalidateSize(); renderMap(); } }, 500);
     }
 }
 
@@ -166,7 +160,6 @@ document.getElementById('reporteForm').addEventListener('submit', async function
         await addDoc(reclamosCiudadanosRef, record);
         alert("✅ ¡Reporte enviado! Gracias por mejorar tu barrio.");
         
-        // Reset form visual
         this.reset();
         document.getElementById('fotoPreview').classList.add('d-none');
         document.getElementById('fotoBase64').value = "";
@@ -189,7 +182,6 @@ document.getElementById('reporteForm').addEventListener('submit', async function
     }
 });
 
-// Helper para colores de estado
 function getStatusBadge(estado) {
     let cls = "badge-recibido";
     if(estado.includes("Revisión")) cls = "badge-revision";
@@ -294,7 +286,6 @@ function renderMap() {
     });
 
     reportesGlobales.forEach(r => {
-        // Validación extra: Solo dibuja el marcador si existen coordenadas
         if(r.lat && r.lng) {
             let m = L.marker([r.lat, r.lng], {icon: customIcon}).addTo(map)
                      .bindPopup(`<div style="text-align:center;"><b>${r.categoria}</b><br><span style="color:#6b21a8;">Apoyos: ${r.apoyos}</span><br>${getStatusBadge(r.estado)}</div>`);

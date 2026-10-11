@@ -135,7 +135,8 @@
         <!-- SECCIÓN 3: MAPA -->
         <div id="mapSection" class="section-hidden">
             <h4 class="mb-3 section-title"><i class="fa-solid fa-map-location-dot"></i> Mapa de Incidentes</h4>
-            <div class="glass-card p-2">
+            <!-- FIX: Se quita la clase 'glass-card' de aquí. El efecto 'backdrop-filter' rompe el renderizado de los mapas en navegadores móviles -->
+            <div class="map-container-solid">
                 <div id="map" class="rounded"></div>
             </div>
         </div>

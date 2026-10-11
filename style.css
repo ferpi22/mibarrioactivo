@@ -169,9 +169,17 @@ body {
 .status-text { color: #d946ef; }
 .status-text.success { color: #10b981; }
 
-/* Mapa */
+/* FIX MAPA: Contenedor sin backdrop-filter para evitar bug de renderizado en Chrome/Safari */
+.map-container-solid {
+    background: white;
+    padding: 6px;
+    border-radius: 18px;
+    border: 1px solid var(--violet-light);
+    box-shadow: var(--glass-shadow);
+}
 #map { 
-    height: 55vh; 
+    height: 60vh; 
+    min-height: 400px;
     width: 100%; 
     z-index: 1; 
 }
