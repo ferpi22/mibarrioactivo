@@ -1,7 +1,7 @@
 
 // 1. IMPORTAR FIREBASE
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
-import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, query, orderBy, deleteDoc } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
 
 // 2. CREDENCIALES
 const firebaseConfig = {
@@ -42,7 +42,6 @@ onSnapshot(q, (snapshot) => {
     if (document.getElementById('mapSection').className.includes('section-active') && map) {
         renderMap();
     }
-    // Si el panel de admin está abierto, refrescarlo en tiempo real
     if (document.getElementById('adminDashboardSection').className.includes('section-active')) {
         renderAdmin();
     }
@@ -57,7 +56,6 @@ window.showSection = function(sectionId) {
     
     document.querySelectorAll('.nav-item-bottom').forEach(el => el.classList.remove('active'));
     
-    // El botón activo para Admin
     if(sectionId === 'adminLoginSection' || sectionId === 'adminDashboardSection') {
         document.getElementById('nav-adminLogin').classList.add('active');
     } else {
@@ -78,7 +76,7 @@ window.showSection = function(sectionId) {
     }
 }
 
-// 6. GEOLOCALIZACIÓN Y FOTOS (Omitido código estándar ya existente para acortar, se mantiene igual funcionalmente)
+// 6. GEOLOCALIZACIÓN
 window.getLocation = function() {
     const status = document.getElementById('locationStatus');
     const btn = document.getElementById('btnGPS');
@@ -100,32 +98,37 @@ window.getLocation = function() {
     }
 }
 
-document.getElementById('fotoInput').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if(!file) return;
-    const reader = new FileReader();
-    reader.onload = function(event) {
-        const img = new Image();
-        img.onload = function() {
-            const canvas = document.createElement('canvas');
-            const MAX_WIDTH = 500;
-            const scaleSize = MAX_WIDTH / img.width;
-            canvas.width = MAX_WIDTH;
-            canvas.height = img.height * scaleSize;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            const base64Data = canvas.toDataURL('image/jpeg', 0.6);
-            document.getElementById('fotoBase64').value = base64Data;
-            const preview = document.getElementById('fotoPreview');
-            preview.src = base64Data;
-            preview.classList.remove('d-none');
+// 7. COMPRIMIR FOTOS (Soporte para 2 inputs)
+function setupPhotoInput(inputId, base64Id, previewId) {
+    document.getElementById(inputId).addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if(!file) return;
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                const MAX_WIDTH = 600; // Un poco más de calidad para ver cuadradas bien
+                const scaleSize = MAX_WIDTH / img.width;
+                canvas.width = MAX_WIDTH;
+                canvas.height = img.height * scaleSize;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                const base64Data = canvas.toDataURL('image/jpeg', 0.7);
+                document.getElementById(base64Id).value = base64Data;
+                const preview = document.getElementById(previewId);
+                preview.src = base64Data;
+                preview.classList.remove('d-none');
+            }
+            img.src = event.target.result;
         }
-        img.src = event.target.result;
-    }
-    reader.readAsDataURL(file);
-});
+        reader.readAsDataURL(file);
+    });
+}
+setupPhotoInput('fotoInput1', 'fotoBase64_1', 'fotoPreview1');
+setupPhotoInput('fotoInput2', 'fotoBase64_2', 'fotoPreview2');
 
-// ENVIO DE REPORTE
+// 8. ENVIAR REPORTE CON HASTA 2 FOTOS
 document.getElementById('reporteForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     const lat = document.getElementById('lat').value;
@@ -136,7 +139,8 @@ document.getElementById('reporteForm').addEventListener('submit', async function
         dispositivo_id: miDeviceId,
         categoria: document.getElementById('categoria').value,
         descripcion: document.getElementById('descripcion').value,
-        foto: document.getElementById('fotoBase64').value || null,
+        foto1: document.getElementById('fotoBase64_1').value || null,
+        foto2: document.getElementById('fotoBase64_2').value || null,
         lat: parseFloat(lat),
         lng: parseFloat(lng),
         apoyos: 0,
@@ -152,8 +156,12 @@ document.getElementById('reporteForm').addEventListener('submit', async function
         await addDoc(reclamosCiudadanosRef, record);
         alert("✅ ¡Reporte enviado!");
         this.reset();
-        document.getElementById('fotoPreview').classList.add('d-none');
-        document.getElementById('fotoBase64').value = "";
+        document.getElementById('fotoPreview1').classList.add('d-none');
+        document.getElementById('fotoPreview1').src = "";
+        document.getElementById('fotoBase64_1').value = "";
+        document.getElementById('fotoPreview2').classList.add('d-none');
+        document.getElementById('fotoPreview2').src = "";
+        document.getElementById('fotoBase64_2').value = "";
         document.getElementById('locationStatus').innerHTML = "⚠️ Requerido para enviar";
         document.getElementById('locationStatus').className = "status-text fw-bold";
         const btnGPS = document.getElementById('btnGPS');
@@ -176,31 +184,25 @@ function getStatusBadge(estado) {
     return `<span class="badge-status ${cls}">${estado}</span>`;
 }
 
-// RENDER MAPA PUBLICO
-function renderMap() {
-    markers.forEach(m => map.removeLayer(m));
-    markers = [];
-    reportesGlobales.forEach(r => {
-        if(r.lat && r.lng) {
-            let pinColor = '#9333ea';
-            if(r.categoria.includes('Bache')) pinColor = '#6c757d';
-            if(r.categoria.includes('Luminaria')) pinColor = '#eab308';
-            if(r.categoria.includes('Basura')) pinColor = '#198754';
-            if(r.categoria.includes('Agua')) pinColor = '#0ea5e9';
-            if(r.categoria.includes('Arbolado')) pinColor = '#15803d';
-
-            const customIcon = L.divIcon({
-                className: 'custom-pin',
-                html: `<i class="fa-solid fa-location-dot fa-2x" style="color: ${pinColor}; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.3));"></i>`,
-                iconSize: [30, 42], iconAnchor: [15, 42], popupAnchor: [0, -40]
-            });
-            let m = L.marker([r.lat, r.lng], {icon: customIcon}).addTo(map)
-                     .bindPopup(`<div style="text-align:center;"><b>${r.categoria}</b><br><span style="color:${pinColor}; font-weight:bold;">Apoyos: ${r.apoyos}</span><br><div class="mt-1">${getStatusBadge(r.estado)}</div></div>`);
-            markers.push(m);
-        }
-    });
+// Función auxiliar para iconos por categoría
+function getIconForCategory(categoria) {
+    let iconCat = '<i class="fa-solid fa-circle-exclamation text-danger"></i>';
+    if(categoria.includes('Bache')) iconCat = '<i class="fa-solid fa-road text-secondary"></i>';
+    if(categoria.includes('Luminaria')) iconCat = '<i class="fa-solid fa-lightbulb text-warning"></i>';
+    if(categoria.includes('Basura')) iconCat = '<i class="fa-solid fa-trash text-success"></i>';
+    if(categoria.includes('Agua')) iconCat = '<i class="fa-solid fa-droplet text-info"></i>';
+    if(categoria.includes('Arbolado')) iconCat = '<i class="fa-solid fa-tree text-success"></i>';
+    if(categoria.includes('Animales')) iconCat = '<i class="fa-solid fa-paw" style="color:#8B4513;"></i>';
+    if(categoria.includes('Casa')) iconCat = '<i class="fa-solid fa-house-chimney-crack text-secondary"></i>';
+    if(categoria.includes('Baldío')) iconCat = '<i class="fa-solid fa-mountain-sun" style="color:#d97706;"></i>';
+    if(categoria.includes('Seguridad')) iconCat = '<i class="fa-solid fa-shield-halved text-danger"></i>';
+    if(categoria.includes('Asfalto')) iconCat = '<i class="fa-solid fa-road-barrier" style="color:#f97316;"></i>';
+    if(categoria.includes('Pastizales')) iconCat = '<i class="fa-solid fa-seedling" style="color:#84cc16;"></i>';
+    if(categoria.includes('Violencia')) iconCat = '<i class="fa-solid fa-triangle-exclamation" style="color:#9f1239;"></i>';
+    return iconCat;
 }
 
+// 9. RENDERIZAR FEED (Muro) CON FOTOS CUADRADAS Y MÚLTIPLES
 function renderFeed() {
     const feed = document.getElementById('feedContainer');
     feed.innerHTML = '';
@@ -212,11 +214,23 @@ function renderFeed() {
         let yaVote = misVotos.includes(r.id);
         let card = document.createElement('div');
         card.className = 'feed-card';
-        let fotoHtml = r.foto ? `<img src="${r.foto}" class="feed-foto" alt="Problema">` : '';
+        
+        let iconCat = getIconForCategory(r.categoria);
         let badgeHtml = getStatusBadge(r.estado);
+        
+        // Manejo de fotos múltiples (viejas usan r.foto, nuevas r.foto1, r.foto2)
+        let fotoHtml = '';
+        let f1 = r.foto1 || r.foto; // Soporte retroactivo
+        let f2 = r.foto2;
+        if(f1 && f2) {
+            fotoHtml = `<div class="d-flex justify-content-between"><img src="${f1}" class="feed-foto-half"><img src="${f2}" class="feed-foto-half"></div>`;
+        } else if(f1) {
+            fotoHtml = `<img src="${f1}" class="feed-foto-single">`;
+        }
+
         card.innerHTML = `
             <div class="d-flex justify-content-between align-items-center mb-2">
-                <strong style="color: var(--violet-main); font-size:1.05rem;">${r.categoria}</strong>
+                <strong style="color: var(--violet-main); font-size:1.05rem;">${iconCat} ${r.categoria}</strong>
                 ${badgeHtml}
             </div>
             <p class="mb-2 text-dark small" style="font-weight:500;">"${r.descripcion}"</p>
@@ -251,16 +265,45 @@ function renderMisReclamos() {
     });
 }
 
+// 12. RENDER MAPA CON NUEVAS CATEGORÍAS
+function renderMap() {
+    markers.forEach(m => map.removeLayer(m));
+    markers = [];
+    reportesGlobales.forEach(r => {
+        if(r.lat && r.lng) {
+            let pinColor = '#9333ea';
+            if(r.categoria.includes('Bache')) pinColor = '#6c757d';
+            if(r.categoria.includes('Luminaria')) pinColor = '#eab308';
+            if(r.categoria.includes('Basura')) pinColor = '#198754';
+            if(r.categoria.includes('Agua')) pinColor = '#0ea5e9';
+            if(r.categoria.includes('Arbolado')) pinColor = '#15803d';
+            if(r.categoria.includes('Animales')) pinColor = '#8B4513';
+            if(r.categoria.includes('Casa')) pinColor = '#4b5563';
+            if(r.categoria.includes('Baldío')) pinColor = '#d97706';
+            if(r.categoria.includes('Seguridad')) pinColor = '#dc2626';
+            if(r.categoria.includes('Asfalto')) pinColor = '#f97316';
+            if(r.categoria.includes('Pastizales')) pinColor = '#84cc16';
+            if(r.categoria.includes('Violencia')) pinColor = '#9f1239';
+
+            const customIcon = L.divIcon({
+                className: 'custom-pin',
+                html: `<i class="fa-solid fa-location-dot fa-2x" style="color: ${pinColor}; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.3));"></i>`,
+                iconSize: [30, 42], iconAnchor: [15, 42], popupAnchor: [0, -40]
+            });
+            let m = L.marker([r.lat, r.lng], {icon: customIcon}).addTo(map)
+                     .bindPopup(`<div style="text-align:center;"><b>${r.categoria}</b><br><span style="color:${pinColor}; font-weight:bold;">Apoyos: ${r.apoyos}</span><br><div class="mt-1">${getStatusBadge(r.estado)}</div></div>`);
+            markers.push(m);
+        }
+    });
+}
+
 // ---------------------------------------------------------------------------------
 // MÓDULO ADMINISTRADOR EXCLUSIVO
 // ---------------------------------------------------------------------------------
 
-// Login Admin
 window.loginAdmin = function(e) {
     e.preventDefault();
     const pass = document.getElementById('adminPass').value;
-    
-    // Contraseña establecida para el equipo de gestión
     if(pass === 'admin2026') {
         document.getElementById('adminPass').value = '';
         showSection('adminDashboardSection');
@@ -270,7 +313,6 @@ window.loginAdmin = function(e) {
     }
 }
 
-// Renderizar Panel Admin
 window.renderAdmin = function() {
     const grid = document.getElementById('adminGrid');
     grid.innerHTML = '';
@@ -282,7 +324,6 @@ window.renderAdmin = function() {
         filtrados = reportesGlobales.filter(r => r.categoria === filtro);
     }
     
-    // Actualizar Estadísticas Rápidas
     document.getElementById('adminTotal').innerText = reportesGlobales.length;
     let resueltos = reportesGlobales.filter(r => r.estado.includes('Solucionado')).length;
     document.getElementById('adminSolucionados').innerText = resueltos;
@@ -297,11 +338,17 @@ window.renderAdmin = function() {
         let col = document.createElement('div');
         col.className = 'col-12 col-md-6';
         
-        let fotoHtml = r.foto ? 
-            `<img src="${r.foto}" class="w-100 rounded mb-3 shadow-sm" style="height:200px; object-fit:cover;">` : 
-            `<div class="w-100 bg-light rounded mb-3 d-flex align-items-center justify-content-center border" style="height:100px; color:#aaa;"><i class="fa-solid fa-camera-slash"></i>&nbsp; Sin Foto</div>`;
+        let f1 = r.foto1 || r.foto;
+        let f2 = r.foto2;
+        let fotoHtml = '';
+        if(f1 && f2) {
+            fotoHtml = `<div class="d-flex justify-content-between mb-3"><img src="${f1}" class="feed-foto-half mt-0 shadow-sm"><img src="${f2}" class="feed-foto-half mt-0 shadow-sm"></div>`;
+        } else if (f1) {
+            fotoHtml = `<img src="${f1}" class="feed-foto-single mt-0 mb-3 shadow-sm">`;
+        } else {
+            fotoHtml = `<div class="w-100 bg-light rounded mb-3 d-flex align-items-center justify-content-center border" style="height:100px; color:#aaa;"><i class="fa-solid fa-camera-slash"></i>&nbsp; Sin Foto</div>`;
+        }
             
-        // Enlace inteligente a Google Maps con las coordenadas
         let linkMapa = `https://www.google.com/maps?q=${r.lat},${r.lng}`;
 
         col.innerHTML = `
@@ -316,14 +363,17 @@ window.renderAdmin = function() {
                 
                 <p class="small mb-3 fw-bold flex-grow-1">"${r.descripcion}"</p>
                 
-                <div class="d-grid mb-3">
-                    <a href="${linkMapa}" target="_blank" class="btn btn-outline-primary btn-sm fw-bold">
-                        <i class="fa-solid fa-location-dot"></i> Ver en Google Maps
+                <div class="d-flex justify-content-between gap-2 mb-3">
+                    <a href="${linkMapa}" target="_blank" class="btn btn-outline-primary btn-sm fw-bold flex-grow-1">
+                        <i class="fa-solid fa-location-dot"></i> Ver GPS
                     </a>
+                    <button class="btn btn-outline-danger btn-sm fw-bold" onclick="borrarReclamoAdmin('${r.id}')">
+                        <i class="fa-solid fa-trash"></i> Borrar
+                    </button>
                 </div>
                 
                 <div class="p-2 rounded bg-light border">
-                    <label class="small fw-bold mb-1 text-danger">Actualizar Estado del Reclamo:</label>
+                    <label class="small fw-bold mb-1 text-danger">Actualizar Estado:</label>
                     <select class="form-select admin-status-select border-danger text-dark" onchange="cambiarEstadoAdmin('${r.id}', this.value, '${r.estado}')">
                         <option value="Recibido 📥" ${r.estado.includes('Recibido') ? 'selected' : ''}>📥 Recibido (Pendiente)</option>
                         <option value="En Revisión 🔍" ${r.estado.includes('Revisión') ? 'selected' : ''}>🔍 En Revisión</option>
@@ -337,18 +387,29 @@ window.renderAdmin = function() {
     });
 }
 
-// Cambiar estado en Base de Datos
 window.cambiarEstadoAdmin = async function(docId, nuevoEstado, estadoAnterior) {
-    if(confirm(`¿Estás seguro de notificar a los vecinos que el estado pasa a: ${nuevoEstado}?`)) {
+    if(confirm(`¿Notificar a los vecinos que el estado pasa a: ${nuevoEstado}?`)) {
         try {
             const docRef = doc(db, "reclamos_ciudadanos", docId);
             await updateDoc(docRef, { estado: nuevoEstado });
-            // Se actualiza solo vía onSnapshot
         } catch(err) {
             alert("Error al actualizar la base de datos.");
-            renderAdmin(); // Revertir visual si falla
+            renderAdmin(); 
         }
     } else {
-        renderAdmin(); // Revertir visualmente el 'select' si cancela
+        renderAdmin(); 
+    }
+}
+
+// BORRAR RECLAMO (SOLO ADMIN)
+window.borrarReclamoAdmin = async function(docId) {
+    if(confirm("⚠️ ATENCIÓN: ¿Estás seguro de ELIMINAR este reporte permanentemente? Esta acción borrará la foto y los datos para siempre.")) {
+        try {
+            await deleteDoc(doc(db, "reclamos_ciudadanos", docId));
+            alert("✅ Reclamo eliminado del sistema.");
+        } catch(err) {
+            alert("Error al intentar eliminar.");
+            console.error(err);
+        }
     }
 }

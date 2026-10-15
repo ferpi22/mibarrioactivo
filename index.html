@@ -24,7 +24,7 @@
         </div>
     </nav>
 
-    <!-- Menú Inferior Glass (Actualizado con ADMIN) -->
+    <!-- Menú Inferior Glass -->
     <nav class="nav-bottom glass-nav">
         <div class="nav-item-bottom active" onclick="showSection('homeSection')" id="nav-home">
             <i class="fa-solid fa-house"></i><span>Inicio</span>
@@ -45,7 +45,7 @@
 
     <div class="container mt-4 mb-5 pb-5">
 
-        <!-- SECCIÓN 0: INICIO (HOME DINÁMICO) -->
+        <!-- SECCIÓN 0: INICIO -->
         <div id="homeSection" class="section-active text-center">
             <div class="hero-section glass-card p-4 mb-4">
                 <div class="logo-icon-large mb-2">
@@ -97,19 +97,44 @@
                             <option value="Microbasural / Limpieza">🗑️ Microbasural / Limpieza</option>
                             <option value="Pérdida de Agua">💧 Pérdida de Agua / Cloaca</option>
                             <option value="Arbolado / Cables">🌳 Ramas / Cables caídos</option>
+                            <!-- Nuevas Categorías -->
+                            <option value="Animales Sueltos">🐾 Animales Sueltos</option>
+                            <option value="Casa Abandonada">🏚️ Casa Abandonada</option>
+                            <option value="Terreno Baldío">🏜️ Terreno Baldío</option>
+                            <option value="Falta Seguridad">👮 Falta Seguridad</option>
+                            <option value="Calle sin Asfalto">🛣️ Calle sin Asfalto</option>
+                            <option value="Pastizales Altos">🌾 Pastizales Altos</option>
+                            <option value="Violencia Familiar">⚠️ Violencia Familiar</option>
                         </select>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-bold custom-label">Tomar Foto</label>
-                        <input type="file" class="form-control custom-input" id="fotoInput" accept="image/*" capture="environment">
-                        <img id="fotoPreview" class="img-fluid mt-3 rounded d-none shadow-sm" style="max-height: 200px; width: 100%; object-fit: cover;">
-                        <input type="hidden" id="fotoBase64">
+                        <label class="form-label fw-bold custom-label">Tomar Fotos (Hasta 2 fotos)</label>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <label for="fotoInput1" class="btn btn-outline-primary w-100 mb-2 p-3 border-dashed rounded-3 shadow-sm bg-white text-dark" style="cursor:pointer; border: 2px dashed #c084fc;">
+                                    <i class="fa-solid fa-camera fs-3 mb-1 text-primary"></i><br>
+                                    <small class="fw-bold">Foto 1</small>
+                                </label>
+                                <input type="file" id="fotoInput1" class="d-none" accept="image/*" capture="environment">
+                                <img id="fotoPreview1" class="img-fluid rounded d-none shadow-sm square-preview mb-2">
+                                <input type="hidden" id="fotoBase64_1">
+                            </div>
+                            <div class="col-6">
+                                <label for="fotoInput2" class="btn btn-outline-primary w-100 mb-2 p-3 border-dashed rounded-3 shadow-sm bg-white text-dark" style="cursor:pointer; border: 2px dashed #c084fc;">
+                                    <i class="fa-solid fa-camera fs-3 mb-1 text-primary"></i><br>
+                                    <small class="fw-bold">Foto 2 (Opc.)</small>
+                                </label>
+                                <input type="file" id="fotoInput2" class="d-none" accept="image/*" capture="environment">
+                                <img id="fotoPreview2" class="img-fluid rounded d-none shadow-sm square-preview mb-2">
+                                <input type="hidden" id="fotoBase64_2">
+                            </div>
+                        </div>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label fw-bold custom-label">Descripción breve</label>
-                        <textarea class="form-control custom-input" id="descripcion" rows="2" placeholder="Ej: Esquina muy oscura..." required></textarea>
+                        <textarea class="form-control custom-input" id="descripcion" rows="2" placeholder="Ej: Esquina muy oscura, perros sueltos..." required></textarea>
                     </div>
 
                     <div class="mb-4">
@@ -126,7 +151,7 @@
             </div>
         </div>
 
-        <!-- SECCIÓN 2: MURO VECINAL (FEED) -->
+        <!-- SECCIÓN 2: MURO VECINAL -->
         <div id="feedSection" class="section-hidden">
             <h4 class="mb-3 section-title"><i class="fa-solid fa-users"></i> Muro Vecinal</h4>
             <p class="text-muted text-center small mb-4">Apoyá los reclamos de tus vecinos para darles prioridad.</p>
@@ -139,12 +164,20 @@
         <div id="mapSection" class="section-hidden">
             <h4 class="mb-3 section-title"><i class="fa-solid fa-map-location-dot"></i> Mapa de Incidentes</h4>
             
-            <div class="d-flex flex-wrap justify-content-center gap-2 mb-3" style="font-size: 0.75rem;">
+            <!-- Leyenda Scrollable -->
+            <div class="map-legend d-flex gap-2 mb-3" style="font-size: 0.75rem;">
                 <span class="badge bg-secondary"><i class="fa-solid fa-road"></i> Baches</span>
                 <span class="badge bg-warning text-dark"><i class="fa-solid fa-lightbulb"></i> Luces</span>
                 <span class="badge bg-success"><i class="fa-solid fa-trash"></i> Basura</span>
                 <span class="badge bg-info text-dark"><i class="fa-solid fa-droplet"></i> Agua</span>
                 <span class="badge" style="background-color: #15803d;"><i class="fa-solid fa-tree"></i> Árboles</span>
+                <span class="badge" style="background-color: #8B4513;"><i class="fa-solid fa-paw"></i> Animales</span>
+                <span class="badge bg-dark"><i class="fa-solid fa-house-chimney-crack"></i> Casa Aban.</span>
+                <span class="badge" style="background-color: #d97706;"><i class="fa-solid fa-mountain-sun"></i> Baldío</span>
+                <span class="badge bg-danger"><i class="fa-solid fa-shield-halved"></i> Seguridad</span>
+                <span class="badge" style="background-color: #f97316;"><i class="fa-solid fa-road-barrier"></i> Sin Asfalto</span>
+                <span class="badge" style="background-color: #84cc16; color:black;"><i class="fa-solid fa-seedling"></i> Pastizales</span>
+                <span class="badge" style="background-color: #9f1239;"><i class="fa-solid fa-triangle-exclamation"></i> Violencia</span>
             </div>
 
             <div class="map-container-solid">
@@ -192,7 +225,6 @@
         <div id="adminDashboardSection" class="section-hidden">
             <h4 class="mb-3 section-title text-danger"><i class="fa-solid fa-screwdriver-wrench"></i> Centro de Gestión</h4>
             
-            <!-- Resumen de estado -->
             <div class="glass-card p-3 mb-4 d-flex justify-content-around text-center shadow-sm">
                 <div>
                     <div class="fs-4 fw-bold text-dark" id="adminTotal">0</div>
@@ -208,7 +240,6 @@
                 </div>
             </div>
 
-            <!-- Filtros -->
             <div class="mb-4">
                 <label class="fw-bold small text-muted ms-2 mb-1">Filtrar por categoría:</label>
                 <select id="adminFiltroCategoria" class="form-select custom-input border-danger" onchange="renderAdmin()">
@@ -218,10 +249,16 @@
                     <option value="Microbasural / Limpieza">🗑️ Microbasural / Limpieza</option>
                     <option value="Pérdida de Agua">💧 Pérdida de Agua / Cloaca</option>
                     <option value="Arbolado / Cables">🌳 Ramas / Cables caídos</option>
+                    <option value="Animales Sueltos">🐾 Animales Sueltos</option>
+                    <option value="Casa Abandonada">🏚️ Casa Abandonada</option>
+                    <option value="Terreno Baldío">🏜️ Terreno Baldío</option>
+                    <option value="Falta Seguridad">👮 Falta Seguridad</option>
+                    <option value="Calle sin Asfalto">🛣️ Calle sin Asfalto</option>
+                    <option value="Pastizales Altos">🌾 Pastizales Altos</option>
+                    <option value="Violencia Familiar">⚠️ Violencia Familiar</option>
                 </select>
             </div>
 
-            <!-- Grilla Interactiva de Reclamos -->
             <div id="adminGrid" class="row g-3">
                 <!-- Se llena por JS -->
             </div>
