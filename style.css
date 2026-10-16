@@ -139,7 +139,6 @@ body {
     transition: transform 0.2s;
 }
 
-/* FIX MAPA Y LEYENDA */
 .map-legend {
     overflow-x: auto;
     white-space: nowrap;
@@ -163,7 +162,6 @@ body {
     z-index: 1; 
 }
 
-/* FOTOS CUADRADAS */
 .square-preview {
     width: 100%;
     aspect-ratio: 1 / 1;
@@ -223,7 +221,6 @@ body {
 .custom-table th { font-weight: 700; border-bottom: 2px solid var(--violet-pastel); color: var(--violet-main); }
 .custom-table td { vertical-align: middle; border-bottom: 1px solid rgba(255,255,255,0.3); }
 
-/* Navegación Inferior */
 .nav-bottom {
     position: fixed;
     bottom: 0;
@@ -256,7 +253,6 @@ body {
 .nav-item-bottom.active i { transform: translateY(-4px) scale(1.1); }
 .admin-btn { color: #ef4444; }
 
-/* Admin Dashboard */
 .admin-card {
     border: 2px solid rgba(239, 68, 68, 0.2);
     border-radius: 15px;

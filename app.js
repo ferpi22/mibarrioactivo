@@ -1,16 +1,15 @@
 
-// 1. IMPORTAR FIREBASE
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
 import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, query, orderBy, deleteDoc } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
 
-// 2. CREDENCIALES
+// CREDENCIALES NUEVAS DEL USUARIO
 const firebaseConfig = {
-  apiKey: "AIzaSyCvbpU5Ay7XUApX-L55CWjW4nSOCvPzxKg",
-  authDomain: "territorio-la-rioja.firebaseapp.com",
-  projectId: "territorio-la-rioja",
-  storageBucket: "territorio-la-rioja.firebasestorage.app",
-  messagingSenderId: "278625846524",
-  appId: "1:278625846524:web:c863002c6ce33d131b4379"
+  apiKey: "AIzaSyDLIF-2NxGvo8rH1CFPeqg5aN7VQRKSBnw",
+  authDomain: "mibarrio-activo-lr.firebaseapp.com",
+  projectId: "mibarrio-activo-lr",
+  storageBucket: "mibarrio-activo-lr.firebasestorage.app",
+  messagingSenderId: "991538268152",
+  appId: "1:991538268152:web:5625d5902d308c9570b80d"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -28,7 +27,6 @@ let reportesGlobales = [];
 let map = null;
 let markers = [];
 
-// 4. ESCUCHADOR EN TIEMPO REAL
 const q = query(reclamosCiudadanosRef, orderBy("fecha", "desc"));
 onSnapshot(q, (snapshot) => {
     reportesGlobales = [];
@@ -47,7 +45,6 @@ onSnapshot(q, (snapshot) => {
     }
 });
 
-// 5. NAVEGACIÓN
 window.showSection = function(sectionId) {
     ['homeSection', 'formSection', 'feedSection', 'mapSection', 'misReclamosSection', 'adminLoginSection', 'adminDashboardSection'].forEach(id => {
         document.getElementById(id).className = 'section-hidden';
@@ -76,7 +73,6 @@ window.showSection = function(sectionId) {
     }
 }
 
-// 6. GEOLOCALIZACIÓN
 window.getLocation = function() {
     const status = document.getElementById('locationStatus');
     const btn = document.getElementById('btnGPS');
@@ -98,7 +94,6 @@ window.getLocation = function() {
     }
 }
 
-// 7. COMPRIMIR FOTOS (Soporte para 2 inputs)
 function setupPhotoInput(inputId, base64Id, previewId) {
     document.getElementById(inputId).addEventListener('change', function(e) {
         const file = e.target.files[0];
@@ -108,7 +103,7 @@ function setupPhotoInput(inputId, base64Id, previewId) {
             const img = new Image();
             img.onload = function() {
                 const canvas = document.createElement('canvas');
-                const MAX_WIDTH = 600; // Un poco más de calidad para ver cuadradas bien
+                const MAX_WIDTH = 600;
                 const scaleSize = MAX_WIDTH / img.width;
                 canvas.width = MAX_WIDTH;
                 canvas.height = img.height * scaleSize;
@@ -128,7 +123,6 @@ function setupPhotoInput(inputId, base64Id, previewId) {
 setupPhotoInput('fotoInput1', 'fotoBase64_1', 'fotoPreview1');
 setupPhotoInput('fotoInput2', 'fotoBase64_2', 'fotoPreview2');
 
-// 8. ENVIAR REPORTE CON HASTA 2 FOTOS
 document.getElementById('reporteForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     const lat = document.getElementById('lat').value;
@@ -184,7 +178,6 @@ function getStatusBadge(estado) {
     return `<span class="badge-status ${cls}">${estado}</span>`;
 }
 
-// Función auxiliar para iconos por categoría
 function getIconForCategory(categoria) {
     let iconCat = '<i class="fa-solid fa-circle-exclamation text-danger"></i>';
     if(categoria.includes('Bache')) iconCat = '<i class="fa-solid fa-road text-secondary"></i>';
@@ -202,7 +195,6 @@ function getIconForCategory(categoria) {
     return iconCat;
 }
 
-// 9. RENDERIZAR FEED (Muro) CON FOTOS CUADRADAS Y MÚLTIPLES
 function renderFeed() {
     const feed = document.getElementById('feedContainer');
     feed.innerHTML = '';
@@ -218,9 +210,8 @@ function renderFeed() {
         let iconCat = getIconForCategory(r.categoria);
         let badgeHtml = getStatusBadge(r.estado);
         
-        // Manejo de fotos múltiples (viejas usan r.foto, nuevas r.foto1, r.foto2)
         let fotoHtml = '';
-        let f1 = r.foto1 || r.foto; // Soporte retroactivo
+        let f1 = r.foto1 || r.foto;
         let f2 = r.foto2;
         if(f1 && f2) {
             fotoHtml = `<div class="d-flex justify-content-between"><img src="${f1}" class="feed-foto-half"><img src="${f2}" class="feed-foto-half"></div>`;
@@ -265,7 +256,6 @@ function renderMisReclamos() {
     });
 }
 
-// 12. RENDER MAPA CON NUEVAS CATEGORÍAS
 function renderMap() {
     markers.forEach(m => map.removeLayer(m));
     markers = [];
@@ -296,10 +286,6 @@ function renderMap() {
         }
     });
 }
-
-// ---------------------------------------------------------------------------------
-// MÓDULO ADMINISTRADOR EXCLUSIVO
-// ---------------------------------------------------------------------------------
 
 window.loginAdmin = function(e) {
     e.preventDefault();
