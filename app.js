@@ -4,12 +4,12 @@ import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, query, or
 
 // CREDENCIALES NUEVAS DEL USUARIO
 const firebaseConfig = {
-  apiKey: "AIzaSyDLIF-2NxGvo8rH1CFPeqg5aN7VQRKSBnw",
-  authDomain: "mibarrio-activo-lr.firebaseapp.com",
-  projectId: "mibarrio-activo-lr",
-  storageBucket: "mibarrio-activo-lr.firebasestorage.app",
-  messagingSenderId: "991538268152",
-  appId: "1:991538268152:web:5625d5902d308c9570b80d"
+  apiKey: "AIzaSyCinhiBgFVWXM-0WBx5rUxPFeOYOnph0og",
+  authDomain: "mibarrio-activo-final.firebaseapp.com",
+  projectId: "mibarrio-activo-final",
+  storageBucket: "mibarrio-activo-final.firebasestorage.app",
+  messagingSenderId: "908585939719",
+  appId: "1:908585939719:web:a499748352349111614ba2"
 };
 
 const app = initializeApp(firebaseConfig);
