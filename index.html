@@ -3,187 +3,234 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Observatorio Municipal La Rioja</title>
+    <title>MiBarrio Activo</title>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FIX MAPA: Usamos versión específica de Leaflet para mayor estabilidad -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <!-- Google Fonts: Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-light">
-
-    <!-- NAVBAR -->
-    <nav class="navbar navbar-expand-lg fixed-top shadow-sm" id="mainNav">
-        <div class="container-fluid px-4">
-            <a class="navbar-brand fw-bold" href="#">
-                <i class="fa-solid fa-chart-pie brand-icon"></i> ObservatorioMunicipal<span class="fw-light">LR</span>
-            </a>
-            <button class="navbar-toggler text-white border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarResponsive">
-                <ul class="navbar-nav ms-auto py-2 py-lg-0">
-                    <li class="nav-item"><a class="nav-link px-lg-3" href="#mapa-section">Mapa Interactivo</a></li>
-                    <li class="nav-item"><a class="nav-link px-lg-3" href="#directorio-section">Buscador y Datos</a></li>
-                    <li class="nav-item"><a class="nav-link px-lg-3" href="#dashboard-section">Análisis y Gráficos</a></li>
-                </ul>
-            </div>
+<body>
+    <!-- Barra de Navegación Glass -->
+    <nav class="navbar glass-navbar sticky-top">
+        <div class="container-fluid justify-content-center position-relative">
+            <span class="navbar-brand mb-0 h1 logo-title">
+                <i class="fa-solid fa-city"></i> MiBarrio Activo
+            </span>
         </div>
     </nav>
 
-    <!-- HEADER / HERO -->
-    <header class="masthead">
-        <div class="container text-center">
-            <h1 class="fw-bold text-white mb-3 shadow-text">Plataforma de Datos Municipales</h1>
-            <p class="lead text-white-50 mb-0 shadow-text">Análisis demográfico, territorial y comparativo de los 18 departamentos de La Rioja.</p>
+    <!-- Menú Inferior Glass (Actualizado con ADMIN) -->
+    <nav class="nav-bottom glass-nav">
+        <div class="nav-item-bottom active" onclick="showSection('homeSection')" id="nav-home">
+            <i class="fa-solid fa-house"></i><span>Inicio</span>
         </div>
-    </header>
+        <div class="nav-item-bottom" onclick="showSection('formSection')" id="nav-form">
+            <i class="fa-solid fa-bullhorn"></i><span>Reportar</span>
+        </div>
+        <div class="nav-item-bottom" onclick="showSection('feedSection')" id="nav-feed">
+            <i class="fa-solid fa-users"></i><span>Muro</span>
+        </div>
+        <div class="nav-item-bottom" onclick="showSection('mapSection')" id="nav-map">
+            <i class="fa-solid fa-map-location-dot"></i><span>Mapa</span>
+        </div>
+        <div class="nav-item-bottom admin-btn" onclick="showSection('adminLoginSection')" id="nav-adminLogin">
+            <i class="fa-solid fa-shield-halved"></i><span>Admin</span>
+        </div>
+    </nav>
 
-    <div class="container-fluid px-4 mt-4 mb-5">
-        <div class="row g-4">
+    <div class="container mt-4 mb-5 pb-5">
+
+        <!-- SECCIÓN 0: INICIO (HOME DINÁMICO) -->
+        <div id="homeSection" class="section-active text-center">
+            <div class="hero-section glass-card p-4 mb-4">
+                <div class="logo-icon-large mb-2">
+                    <i class="fa-solid fa-location-dot"></i>
+                </div>
+                <h1 class="welcome-title">¡Hola Vecino!</h1>
+                <p class="welcome-subtitle">Tu voz mejora nuestra comunidad. Seleccioná una acción para empezar.</p>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-6">
+                    <button class="action-btn glass-card" onclick="showSection('formSection')">
+                        <i class="fa-solid fa-plus-circle icon-report"></i>
+                        <span>Nuevo Reporte</span>
+                    </button>
+                </div>
+                <div class="col-6">
+                    <button class="action-btn glass-card" onclick="showSection('feedSection')">
+                        <i class="fa-solid fa-users icon-feed"></i>
+                        <span>Muro Vecinal</span>
+                    </button>
+                </div>
+                <div class="col-6">
+                    <button class="action-btn glass-card" onclick="showSection('mapSection')">
+                        <i class="fa-solid fa-map icon-map"></i>
+                        <span>Mapa Incidentes</span>
+                    </button>
+                </div>
+                <div class="col-6">
+                    <button class="action-btn glass-card" onclick="showSection('misReclamosSection')">
+                        <i class="fa-solid fa-clipboard-list icon-mine"></i>
+                        <span>Mis Avisos</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- SECCIÓN 1: FORMULARIO DE REPORTE -->
+        <div id="formSection" class="section-hidden">
+            <h4 class="mb-3 section-title"><i class="fa-solid fa-pen-to-square"></i> Reportar un Problema</h4>
+            <div class="glass-card p-4">
+                <form id="reporteForm">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold custom-label">Tipo de Incidente</label>
+                        <select class="form-select custom-input" id="categoria" required>
+                            <option value="" disabled selected>Selecciona una opción...</option>
+                            <option value="Bache / Asfalto Roto">🚧 Bache / Asfalto Roto</option>
+                            <option value="Luminaria Apagada">💡 Luminaria Apagada/Rota</option>
+                            <option value="Microbasural / Limpieza">🗑️ Microbasural / Limpieza</option>
+                            <option value="Pérdida de Agua">💧 Pérdida de Agua / Cloaca</option>
+                            <option value="Arbolado / Cables">🌳 Ramas / Cables caídos</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold custom-label">Tomar Foto</label>
+                        <input type="file" class="form-control custom-input" id="fotoInput" accept="image/*" capture="environment">
+                        <img id="fotoPreview" class="img-fluid mt-3 rounded d-none shadow-sm" style="max-height: 200px; width: 100%; object-fit: cover;">
+                        <input type="hidden" id="fotoBase64">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold custom-label">Descripción breve</label>
+                        <textarea class="form-control custom-input" id="descripcion" rows="2" placeholder="Ej: Esquina muy oscura..." required></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <button type="button" class="btn btn-gps w-100 mb-2 fw-bold" onclick="getLocation()" id="btnGPS">
+                            <i class="fa-solid fa-location-crosshairs"></i> Obtener Ubicación
+                        </button>
+                        <div class="text-center"><small id="locationStatus" class="status-text fw-bold">⚠️ Requerido para enviar</small></div>
+                        <input type="hidden" id="lat" required>
+                        <input type="hidden" id="lng" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-submit w-100 py-3 fs-5 fw-bold"><i class="fa-solid fa-paper-plane"></i> Enviar Reporte</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 2: MURO VECINAL (FEED) -->
+        <div id="feedSection" class="section-hidden">
+            <h4 class="mb-3 section-title"><i class="fa-solid fa-users"></i> Muro Vecinal</h4>
+            <p class="text-muted text-center small mb-4">Apoyá los reclamos de tus vecinos para darles prioridad.</p>
+            <div id="feedContainer">
+                <div class="text-center mt-5 text-muted"><i class="fa-solid fa-spinner fa-spin"></i> Cargando...</div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 3: MAPA -->
+        <div id="mapSection" class="section-hidden">
+            <h4 class="mb-3 section-title"><i class="fa-solid fa-map-location-dot"></i> Mapa de Incidentes</h4>
             
-            <!-- COLUMNA IZQUIERDA: Mapa y Buscador -->
-            <div class="col-lg-5">
-                
-                <!-- SECCIÓN MAPA -->
-                <div id="mapa-section" class="card shadow-sm border-0 mb-4 rounded-4 overflow-hidden">
-                    <div class="card-header bg-white border-0 pt-4 pb-0 px-4">
-                        <h5 class="fw-bold text-primary"><i class="fa-solid fa-map-location-dot me-2"></i> Mapa Territorial</h5>
-                        <p class="text-muted small">Seleccione un departamento para ver sus indicadores.</p>
-                    </div>
-                    <!-- FIX MAPA: Estilo duro inline para forzar el renderizado -->
-                    <div class="card-body p-0" style="position: relative; width: 100%; min-height: 450px;">
-                        <div id="map" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; width: 100%; height: 100%; z-index: 1;"></div>
-                    </div>
-                </div>
-
-                <!-- SECCIÓN BUSCADOR Y LISTA -->
-                <div id="directorio-section" class="card shadow-sm border-0 rounded-4">
-                    <div class="card-header bg-white border-0 pt-4 px-4 pb-2">
-                        <h5 class="fw-bold text-primary"><i class="fa-solid fa-magnifying-glass me-2"></i> Directorio y Buscador</h5>
-                        <input type="text" id="searchInput" class="form-control form-control-lg bg-light border-0 mt-3" placeholder="Buscar departamento o cabecera..." onkeyup="filtrarTabla()">
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
-                            <table class="table table-hover align-middle mb-0 custom-table">
-                                <thead class="table-light sticky-top">
-                                    <tr>
-                                        <th class="ps-4">Departamento</th>
-                                        <th>Cabecera</th>
-                                        <th class="text-end pe-4">Acción</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tableBody">
-                                    <!-- Llenado por JS -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
+            <div class="d-flex flex-wrap justify-content-center gap-2 mb-3" style="font-size: 0.75rem;">
+                <span class="badge bg-secondary"><i class="fa-solid fa-road"></i> Baches</span>
+                <span class="badge bg-warning text-dark"><i class="fa-solid fa-lightbulb"></i> Luces</span>
+                <span class="badge bg-success"><i class="fa-solid fa-trash"></i> Basura</span>
+                <span class="badge bg-info text-dark"><i class="fa-solid fa-droplet"></i> Agua</span>
+                <span class="badge" style="background-color: #15803d;"><i class="fa-solid fa-tree"></i> Árboles</span>
             </div>
 
-            <!-- COLUMNA DERECHA: DASHBOARD DE DATOS Y GRÁFICOS -->
-            <div class="col-lg-7" id="dashboard-section">
-                
-                <!-- Estado Vacío (Antes de seleccionar) -->
-                <div id="empty-state" class="card shadow-sm border-0 rounded-4 h-100 d-flex justify-content-center align-items-center text-center p-5">
-                    <i class="fa-solid fa-hand-pointer text-muted mb-3" style="font-size: 4rem; opacity: 0.3;"></i>
-                    <h4 class="text-muted fw-bold">Seleccione un Municipio</h4>
-                    <p class="text-muted mb-0">Haga clic en el mapa o en el directorio para visualizar las estadísticas comparativas.</p>
-                </div>
-
-                <!-- Dashboard de Datos (Oculto inicialmente) -->
-                <div id="data-dashboard" class="d-none">
-                    
-                    <!-- Tarjeta de Identificación -->
-                    <div class="card shadow-sm border-0 rounded-4 mb-4 bg-primary text-white position-relative overflow-hidden">
-                        <div class="card-body p-4 position-relative z-1">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div>
-                                    <span class="badge bg-secondary mb-2 fs-6">Perfil Municipal</span>
-                                    <h2 class="fw-bold mb-0" id="dash-nombre">Nombre Dpto</h2>
-                                    <p class="mb-0 text-white-50 fs-5"><i class="fa-solid fa-location-dot"></i> Cabecera: <span id="dash-cabecera">Cabecera</span></p>
-                                </div>
-                                <div class="text-end">
-                                    <small class="text-white-50 d-block text-uppercase">Intendencia</small>
-                                    <span class="fw-bold fs-5" id="dash-intendente">Nombre Intendente</span>
-                                </div>
-                            </div>
-                        </div>
-                        <i class="fa-solid fa-building-columns position-absolute text-white" style="font-size: 15rem; right: -20px; bottom: -40px; opacity: 0.1; z-index: 0;"></i>
-                    </div>
-
-                    <!-- Tarjetas de Métricas -->
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-4">
-                            <div class="card shadow-sm border-0 rounded-4 h-100 metric-card">
-                                <div class="card-body text-center p-4">
-                                    <div class="metric-icon text-primary bg-primary bg-opacity-10 mb-2"><i class="fa-solid fa-users"></i></div>
-                                    <h3 class="fw-bold mb-0" id="dash-pob">0</h3>
-                                    <small class="text-muted text-uppercase fw-bold">Habitantes</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card shadow-sm border-0 rounded-4 h-100 metric-card">
-                                <div class="card-body text-center p-4">
-                                    <div class="metric-icon text-secondary bg-secondary bg-opacity-10 mb-2"><i class="fa-solid fa-ruler-combined"></i></div>
-                                    <h3 class="fw-bold mb-0"><span id="dash-sup">0</span> <small class="fs-6 text-muted">km²</small></h3>
-                                    <small class="text-muted text-uppercase fw-bold">Superficie</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card shadow-sm border-0 rounded-4 h-100 metric-card">
-                                <div class="card-body text-center p-4">
-                                    <div class="metric-icon text-success bg-success bg-opacity-10 mb-2"><i class="fa-solid fa-chart-area"></i></div>
-                                    <h3 class="fw-bold mb-0"><span id="dash-den">0</span> <small class="fs-6 text-muted">h/km²</small></h3>
-                                    <small class="text-muted text-uppercase fw-bold">Densidad</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Gráficos Comparativos -->
-                    <div class="row g-4">
-                        <div class="col-md-6">
-                            <div class="card shadow-sm border-0 rounded-4 h-100">
-                                <div class="card-header bg-white border-0 pt-4 pb-0 px-4">
-                                    <h6 class="fw-bold text-dark"><i class="fa-solid fa-chart-bar text-primary"></i> Población vs Promedio Provincial</h6>
-                                </div>
-                                <div class="card-body p-4">
-                                    <canvas id="chartPoblacion" height="250"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card shadow-sm border-0 rounded-4 h-100">
-                                <div class="card-header bg-white border-0 pt-4 pb-0 px-4">
-                                    <h6 class="fw-bold text-dark"><i class="fa-solid fa-chart-pie text-secondary"></i> Participación Territorial</h6>
-                                </div>
-                                <div class="card-body p-4">
-                                    <canvas id="chartSuperficie" height="250"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
+            <div class="map-container-solid">
+                <div id="map" class="rounded"></div>
             </div>
         </div>
+
+        <!-- SECCIÓN 4: MIS RECLAMOS -->
+        <div id="misReclamosSection" class="section-hidden">
+            <h4 class="mb-3 section-title"><i class="fa-solid fa-clipboard-check"></i> Mis Reportes</h4>
+            <p class="text-muted text-center small mb-4">Seguimiento del estado de tus reclamos.</p>
+            <div class="glass-card p-3">
+                <div class="table-responsive">
+                    <table class="table table-borderless custom-table mb-0">
+                        <thead>
+                            <tr>
+                                <th>Incidente</th>
+                                <th class="text-end">Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="misReclamosTabla">
+                            <!-- Llenado por JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 5: LOGIN DE ADMINISTRADOR -->
+        <div id="adminLoginSection" class="section-hidden text-center">
+            <h4 class="mb-3 section-title text-danger"><i class="fa-solid fa-lock"></i> Acceso Privado</h4>
+            <p class="text-muted small mb-4">Área exclusiva para el equipo de gestión municipal.</p>
+            <div class="glass-card p-4 mx-auto" style="max-width: 400px;">
+                <form onsubmit="loginAdmin(event)">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold custom-label text-danger">Contraseña de Administrador</label>
+                        <input type="password" id="adminPass" class="form-control custom-input text-center" placeholder="******" required>
+                    </div>
+                    <button type="submit" class="btn btn-danger w-100 fw-bold shadow"><i class="fa-solid fa-right-to-bracket"></i> Ingresar</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 6: PANEL DASHBOARD ADMINISTRADOR -->
+        <div id="adminDashboardSection" class="section-hidden">
+            <h4 class="mb-3 section-title text-danger"><i class="fa-solid fa-screwdriver-wrench"></i> Centro de Gestión</h4>
+            
+            <!-- Resumen de estado -->
+            <div class="glass-card p-3 mb-4 d-flex justify-content-around text-center shadow-sm">
+                <div>
+                    <div class="fs-4 fw-bold text-dark" id="adminTotal">0</div>
+                    <div class="small text-muted text-uppercase">Total</div>
+                </div>
+                <div class="border-start border-end px-4">
+                    <div class="fs-4 fw-bold text-danger" id="adminPendientes">0</div>
+                    <div class="small text-muted text-uppercase">Pendientes</div>
+                </div>
+                <div>
+                    <div class="fs-4 fw-bold text-success" id="adminSolucionados">0</div>
+                    <div class="small text-muted text-uppercase">Resueltos</div>
+                </div>
+            </div>
+
+            <!-- Filtros -->
+            <div class="mb-4">
+                <label class="fw-bold small text-muted ms-2 mb-1">Filtrar por categoría:</label>
+                <select id="adminFiltroCategoria" class="form-select custom-input border-danger" onchange="renderAdmin()">
+                    <option value="TODOS">🌐 Ver Todas las Categorías</option>
+                    <option value="Bache / Asfalto Roto">🚧 Bache / Asfalto Roto</option>
+                    <option value="Luminaria Apagada">💡 Luminaria Apagada/Rota</option>
+                    <option value="Microbasural / Limpieza">🗑️ Microbasural / Limpieza</option>
+                    <option value="Pérdida de Agua">💧 Pérdida de Agua / Cloaca</option>
+                    <option value="Arbolado / Cables">🌳 Ramas / Cables caídos</option>
+                </select>
+            </div>
+
+            <!-- Grilla Interactiva de Reclamos -->
+            <div id="adminGrid" class="row g-3">
+                <!-- Se llena por JS -->
+            </div>
+        </div>
+
     </div>
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- FIX MAPA: Usamos versión específica de Leaflet -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="app.js"></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script type="module" src="app.js"></script>
 </body>
 </html>
