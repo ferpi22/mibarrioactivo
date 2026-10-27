@@ -4,13 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MiBarrio Activo</title>
+    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts: Poppins -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Barra de Navegación Glass -->
     <nav class="navbar glass-navbar sticky-top">
         <div class="container-fluid justify-content-center position-relative">
             <span class="navbar-brand mb-0 h1 logo-title">
@@ -19,6 +24,7 @@
         </div>
     </nav>
 
+    <!-- Menú Inferior Glass -->
     <nav class="nav-bottom glass-nav">
         <div class="nav-item-bottom active" onclick="showSection('homeSection')" id="nav-home">
             <i class="fa-solid fa-house"></i><span>Inicio</span>
@@ -39,6 +45,7 @@
 
     <div class="container mt-4 mb-5 pb-5">
 
+        <!-- SECCIÓN 0: INICIO -->
         <div id="homeSection" class="section-active text-center">
             <div class="hero-section glass-card p-4 mb-4">
                 <div class="logo-icon-large mb-2">
@@ -76,6 +83,7 @@
             </div>
         </div>
         
+        <!-- SECCIÓN 1: FORMULARIO DE REPORTE -->
         <div id="formSection" class="section-hidden">
             <h4 class="mb-3 section-title"><i class="fa-solid fa-pen-to-square"></i> Reportar un Problema</h4>
             <div class="glass-card p-4">
@@ -89,13 +97,12 @@
                             <option value="Microbasural / Limpieza">🗑️ Microbasural / Limpieza</option>
                             <option value="Pérdida de Agua">💧 Pérdida de Agua / Cloaca</option>
                             <option value="Arbolado / Cables">🌳 Ramas / Cables caídos</option>
+                            <!-- Nuevas Categorías -->
                             <option value="Animales Sueltos">🐾 Animales Sueltos</option>
-                            <option value="Casa Abandonada">🏚️ Casa Abandonada</option>
                             <option value="Terreno Baldío">🏜️ Terreno Baldío</option>
                             <option value="Falta Seguridad">👮 Falta Seguridad</option>
                             <option value="Calle sin Asfalto">🛣️ Calle sin Asfalto</option>
                             <option value="Pastizales Altos">🌾 Pastizales Altos</option>
-                            <option value="Violencia Familiar">⚠️ Violencia Familiar</option>
                         </select>
                     </div>
 
@@ -142,6 +149,7 @@
             </div>
         </div>
 
+        <!-- SECCIÓN 2: MURO VECINAL -->
         <div id="feedSection" class="section-hidden">
             <h4 class="mb-3 section-title"><i class="fa-solid fa-users"></i> Muro Vecinal</h4>
             <p class="text-muted text-center small mb-4">Apoyá los reclamos de tus vecinos para darles prioridad.</p>
@@ -150,9 +158,11 @@
             </div>
         </div>
 
+        <!-- SECCIÓN 3: MAPA -->
         <div id="mapSection" class="section-hidden">
             <h4 class="mb-3 section-title"><i class="fa-solid fa-map-location-dot"></i> Mapa de Incidentes</h4>
             
+            <!-- Leyenda Scrollable -->
             <div class="map-legend d-flex gap-2 mb-3" style="font-size: 0.75rem;">
                 <span class="badge bg-secondary"><i class="fa-solid fa-road"></i> Baches</span>
                 <span class="badge bg-warning text-dark"><i class="fa-solid fa-lightbulb"></i> Luces</span>
@@ -160,12 +170,10 @@
                 <span class="badge bg-info text-dark"><i class="fa-solid fa-droplet"></i> Agua</span>
                 <span class="badge" style="background-color: #15803d;"><i class="fa-solid fa-tree"></i> Árboles</span>
                 <span class="badge" style="background-color: #8B4513;"><i class="fa-solid fa-paw"></i> Animales</span>
-                <span class="badge bg-dark"><i class="fa-solid fa-house-chimney-crack"></i> Casa Aban.</span>
                 <span class="badge" style="background-color: #d97706;"><i class="fa-solid fa-mountain-sun"></i> Baldío</span>
                 <span class="badge bg-danger"><i class="fa-solid fa-shield-halved"></i> Seguridad</span>
                 <span class="badge" style="background-color: #f97316;"><i class="fa-solid fa-road-barrier"></i> Sin Asfalto</span>
                 <span class="badge" style="background-color: #84cc16; color:black;"><i class="fa-solid fa-seedling"></i> Pastizales</span>
-                <span class="badge" style="background-color: #9f1239;"><i class="fa-solid fa-triangle-exclamation"></i> Violencia</span>
             </div>
 
             <div class="map-container-solid">
@@ -173,6 +181,7 @@
             </div>
         </div>
 
+        <!-- SECCIÓN 4: MIS RECLAMOS -->
         <div id="misReclamosSection" class="section-hidden">
             <h4 class="mb-3 section-title"><i class="fa-solid fa-clipboard-check"></i> Mis Reportes</h4>
             <p class="text-muted text-center small mb-4">Seguimiento del estado de tus reclamos.</p>
@@ -186,12 +195,14 @@
                             </tr>
                         </thead>
                         <tbody id="misReclamosTabla">
+                            <!-- Llenado por JS -->
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
 
+        <!-- SECCIÓN 5: LOGIN DE ADMINISTRADOR -->
         <div id="adminLoginSection" class="section-hidden text-center">
             <h4 class="mb-3 section-title text-danger"><i class="fa-solid fa-lock"></i> Acceso Privado</h4>
             <p class="text-muted small mb-4">Área exclusiva para el equipo de gestión municipal.</p>
@@ -206,6 +217,7 @@
             </div>
         </div>
 
+        <!-- SECCIÓN 6: PANEL DASHBOARD ADMINISTRADOR -->
         <div id="adminDashboardSection" class="section-hidden">
             <h4 class="mb-3 section-title text-danger"><i class="fa-solid fa-screwdriver-wrench"></i> Centro de Gestión</h4>
             
@@ -234,21 +246,21 @@
                     <option value="Pérdida de Agua">💧 Pérdida de Agua / Cloaca</option>
                     <option value="Arbolado / Cables">🌳 Ramas / Cables caídos</option>
                     <option value="Animales Sueltos">🐾 Animales Sueltos</option>
-                    <option value="Casa Abandonada">🏚️ Casa Abandonada</option>
                     <option value="Terreno Baldío">🏜️ Terreno Baldío</option>
                     <option value="Falta Seguridad">👮 Falta Seguridad</option>
                     <option value="Calle sin Asfalto">🛣️ Calle sin Asfalto</option>
                     <option value="Pastizales Altos">🌾 Pastizales Altos</option>
-                    <option value="Violencia Familiar">⚠️ Violencia Familiar</option>
                 </select>
             </div>
 
             <div id="adminGrid" class="row g-3">
+                <!-- Se llena por JS -->
             </div>
         </div>
 
     </div>
 
+    <!-- Scripts -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script type="module" src="app.js"></script>
 </body>
